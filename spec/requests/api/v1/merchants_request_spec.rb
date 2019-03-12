@@ -22,6 +22,12 @@ describe 'Merchants API' do
   end
 
   it 'can search through the merchants by its attributes' do
-    
+    merchant = create(:merchant, name: "Name")
+    get "/api/v1/merchants/find?name=#{merchant.name}"
+
+    found_merchant = JSON.parse(response.body)
+    expect(response).to be_successful
+
+    expect(merchant.id).to eq(found_merchant["id"])
   end
 end
