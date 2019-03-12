@@ -8,7 +8,7 @@ describe 'Merchants API' do
     merchants = JSON.parse(response.body)
 
     expect(response).to be_successful
-    expect(merchants.count).to eq(3)
+    expect(merchants["data"].count).to eq(3)
   end
 
   it 'gets a merchant by its id' do
@@ -18,17 +18,16 @@ describe 'Merchants API' do
 
     merchant = JSON.parse(response.body)
     expect(response).to be_successful
-    expect(merchant["id"]).to eq(id)
+    expect(merchant["data"]["id"]).to eq(id.to_s)
   end
 
-  it 'can search find a merchant by its attributes' do
+  it 'can find a merchant by its attributes' do
     merchant = create(:merchant, name: "Name")
     get "/api/v1/merchants/find?name=#{merchant.name}"
 
     found_merchant = JSON.parse(response.body)
     expect(response).to be_successful
-
-    expect(merchant.name).to eq(found_merchant["name"])
+    expect(merchant.name).to eq(found_merchant["data"]["attributes"]["name"])
   end
 
   it 'can find all merchants that match search parameters' do
@@ -42,20 +41,31 @@ describe 'Merchants API' do
 
     found_merchants = JSON.parse(response.body)
     expect(response).to be_successful
+    expect(found_merchants["data"].count).to eq(3)
 
-    expect(found_merchants.count).to eq(3)
-    expect(found_merchants.first["id"]).to eq(merchant_1.id)
-    expect(found_merchants.second["id"]).to eq(merchant_2.id)
-    expect(found_merchants.third["id"]).to eq(merchant_3.id)
+    expect(found_merchants["data"].first["id"]).to eq(merchant_1.id.to_s)
+    expect(found_merchants["data"].second["id"]).to eq(merchant_2.id.to_s)
+    expect(found_merchants["data"].third["id"]).to eq(merchant_3.id.to_s)
 
 
     #Find by created_at
     get "/api/v1/merchants/find_all?created_at=2012-03-27T14:56:04.000Z"
-    found_merchants = JSON.parse(response.body)
+    found_merchants_by_date = JSON.parse(response.body)
     expect(response).to be_successful
 
-    expect(found_merchants.count).to eq(2)
-    expect(found_merchants.first["id"]).to eq(merchant_1.id)
-    expect(found_merchants.second["id"]).to eq(merchant_4.id)
+    expect(found_merchants_by_date["data"].count).to eq(2)
+    expect(found_merchants_by_date["data"].first["id"]).to eq(merchant_1.id.to_s)
+    expect(found_merchants_by_date["data"].second["id"]).to eq(merchant_4.id.to_s)
+  end
+
+  it 'can get a random merchant' do
+    create_list(:merchant, 5)
+
+    get "/api/v1/merchants/random.json"
+
+    merchant = JSON.parse(response.body)
+    expect(response).to be_successful
+    expect(merchant["data"].has_key?("id")).to eq(true)
+
   end
 end
