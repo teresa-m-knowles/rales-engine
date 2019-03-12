@@ -66,6 +66,40 @@ describe 'Merchants API' do
     merchant = JSON.parse(response.body)
     expect(response).to be_successful
     expect(merchant["data"].has_key?("id")).to eq(true)
+  end
+
+  it 'shows their items' do
+    merchant = create(:merchant, name: "Nintendo")
+    item_1 = create(:item, merchant: merchant)
+    item_2 = create(:item, merchant: merchant)
+    item_3 = create(:item, merchant: merchant)
+
+    get "/api/v1/merchants/#{merchant.id}/items"
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body)
+    expect(items["data"].first["id"]).to eq(item_1.id.to_s)
+    expect(items["data"].second["id"]).to eq(item_2.id.to_s)
+    expect(items["data"].third["id"]).to eq(item_3.id.to_s)
 
   end
+
+  it 'shows their invoices' do
+    merchant = create(:merchant)
+    customer = create(:customer)
+
+    invoice_1 = create(:invoice, merchant: merchant, customer: customer)
+    invoice_2 = create(:invoice, merchant: merchant, customer: customer)
+    invoice_3 = create(:invoice, merchant: merchant, customer: customer)
+
+    get "/api/v1/merchants/#{merchant.id}/invoices"
+    expect(response).to be_successful
+
+    invoices = JSON.parse(response.body)
+    expect(invoices["data"].first["id"]).to eq(invoice_1.id.to_s)
+    expect(invoices["data"].second["id"]).to eq(invoice_2.id.to_s)
+    expect(invoices["data"].third["id"]).to eq(invoice_3.id.to_s)
+
+  end
+
 end
