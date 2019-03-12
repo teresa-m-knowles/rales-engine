@@ -8,4 +8,10 @@ namespace :import do
     end
   end
 
+  task items: :environment do
+    CSV.foreach("lib/seeds/items.csv", headers: true) do |row|
+      Item.create!(row.to_hash)
+    end
+  end
+
 end

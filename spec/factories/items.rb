@@ -3,8 +3,8 @@ FactoryBot.define do
     name { "MyString" }
     description { "MyString" }
     unit_price { 1.5 }
-    references { "" }
-    created_at { "MyString" }
-    updated_at { "MyString" }
+    merchant { nil }
+    created_at { "2019-03-12 11:05:49" }
+    updated_at { "2019-03-12 11:05:49" }
   end
 end
