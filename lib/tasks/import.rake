@@ -32,4 +32,10 @@ namespace :import do
     end
   end
 
+  task transactions: :environment do
+    CSV.foreach("lib/seeds/transactions.csv", headers: true) do |row|
+      Transaction.create!(row.to_hash)
+    end
+  end
+
 end
