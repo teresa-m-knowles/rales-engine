@@ -20,4 +20,10 @@ namespace :import do
     end
   end
 
+  task invoices: :environment do
+    CSV.foreach("lib/seeds/invoices.csv", headers: true) do |row|
+      Invoice.create!(row.to_hash)
+    end
+  end
+
 end
