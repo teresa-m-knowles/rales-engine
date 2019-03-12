@@ -14,4 +14,10 @@ namespace :import do
     end
   end
 
+  task customers: :environment do
+    CSV.foreach("lib/seeds/customers.csv", headers: true) do |row|
+      Customer.create!(row.to_hash)
+    end
+  end
+
 end
