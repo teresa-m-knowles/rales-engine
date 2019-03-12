@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Merchant, type: :model do
-  it 'can create merchants from csv file' do
-    
+  describe 'validations' do
+    it {should validate_presence_of :name}
   end
 end
