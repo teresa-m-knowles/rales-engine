@@ -58,7 +58,16 @@ describe 'All Merchants Business Intelligence' do
 #----------------------------------------------------------------------------------------------
 
     get "/api/v1/merchants/most_revenue?quantity=3"
+
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body)
     #This should return merchants 1, 2 and 3
+    expect(merchants["data"].count).to eq(3)
+    expect(merchants["data"][0]["id"]).to eq(merchant_1.id.to_s)
+    expect(merchants["data"][1]["id"]).to eq(merchant_2.id.to_s)
+    expect(merchants["data"][2]["id"]).to eq(merchant_3.id.to_s)
+
 
 #---------------------------------------------------------------------------------------------------------------
 
