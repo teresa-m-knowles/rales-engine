@@ -134,11 +134,10 @@ RSpec.describe Merchant, type: :model do
         invoice_5 = create(:invoice, customer: customer, merchant: merchant_5)
         invoice_item_7 = create(:invoice_item, invoice: invoice_5, item: item_7, quantity: 1, unit_price: 2.77 )
         #----------------------------------------------------------------------------------------------------------------
-
-        expect(Merchant.most_items(3).count).to eq(3)
-        expect(Merchant.most_items(3).first).to eq(merchant_1)
-        expect(Merchant.most_items(3).second).to eq(merchant_2)
-        expect(Merchant.most_items(3).third).to eq(merchant_3)
+        merchants = Merchant.most_items(3)
+        expect(merchants.first).to eq(merchant_1)
+        expect(merchants.second).to eq(merchant_2)
+        expect(merchants.third).to eq(merchant_3)
       end
     end
 
