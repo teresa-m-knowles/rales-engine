@@ -138,6 +138,7 @@ RSpec.describe Merchant, type: :model do
         expect(merchants.first).to eq(merchant_1)
         expect(merchants.second).to eq(merchant_2)
         expect(merchants.third).to eq(merchant_3)
+        
       end
     end
 

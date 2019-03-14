@@ -75,7 +75,7 @@ describe 'All Merchants Business Intelligence' do
 
 
   end
-  it 'returns the top x merchants ranked by total number of items sold'
+  it 'returns the top x merchants ranked by total number of items sold' do
   #GET /api/v1/merchants/most_items?quantity=x
   merchant_1 = create(:merchant, name: "Merchant 1")
   merchant_2 = create(:merchant, name: "Merchant 2")
@@ -133,8 +133,15 @@ describe 'All Merchants Business Intelligence' do
   invoice_item_7 = create(:invoice_item, invoice: invoice_5, item: item_7, quantity: 1, unit_price: 2.77 )
   #----------------------------------------------------------------------------------------------------------------
 
-#Should be 1,2,3
+  get "/api/v1/merchants/most_items?quantity=3"
 
+  expect(response).to be_successful
+  merchants = JSON.parse(response.body)
 
+  expect(merchants["data"].count).to eq(3)
+  expect(merchants["data"][0]["id"]).to eq(merchant_1.id.to_s)
+  expect(merchants["data"][1]["id"]).to eq(merchant_2.id.to_s)
+  expect(merchants["data"][2]["id"]).to eq(merchant_3.id.to_s)
 
+  end 
 end
