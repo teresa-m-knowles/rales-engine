@@ -75,6 +75,7 @@ describe 'All Merchants Business Intelligence' do
 
 
   end
+
   it 'returns the top x merchants ranked by total number of items sold' do
   #GET /api/v1/merchants/most_items?quantity=x
   merchant_1 = create(:merchant, name: "Merchant 1")
@@ -143,5 +144,19 @@ describe 'All Merchants Business Intelligence' do
   expect(merchants["data"][1]["id"]).to eq(merchant_2.id.to_s)
   expect(merchants["data"][2]["id"]).to eq(merchant_3.id.to_s)
 
-  end 
+  end
+
+  it 'returns the eturns the total revenue for date x across all merchants' do
+    #GET /api/v1/merchants/revenue?date=x
+
+    date_one = "2012-03-16"
+    date_two = "2012-03-07"
+
+    response_1 = get "/api/v1/merchants/revenue?date=#{date_one}"
+    response_2 = get "/api/v1/merchants/revenue?date=#{date_two}"
+
+    assert_equal ({"total_revenue" => "2495397.37"}), total_revenue_one["attributes"]
+    assert_equal ({"total_revenue" => "2705630.42"}), total_revenue_two["attributes"]
+
+  end
 end
