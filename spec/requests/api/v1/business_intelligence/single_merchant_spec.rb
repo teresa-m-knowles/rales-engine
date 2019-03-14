@@ -62,16 +62,11 @@ RSpec.describe 'Single Merchant Business Intelligence' do
     transaction_3 = create(:transaction, invoice: invoice_3, result: 'success')
 
     get "/api/v1/merchants/#{merchant.id}/favorite_customer"
-
-    response = JSON.parse(response.body)["data"]
     expect(response).to be_successful
 
-    expect(response["attributes"]["id"]).to eq(merchant.id)
+    customer = JSON.parse(response.body)["data"]
 
-
-
-
-
+    expect(customer["id"]).to eq(customer_1.id.to_s)
 
   end
 end
