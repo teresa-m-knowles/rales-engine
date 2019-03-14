@@ -153,7 +153,7 @@ RSpec.describe Merchant, type: :model do
     end
 
     describe 'it returns the total revenue for a given date across all merchants' do
-      it 'total_revenue' do
+      xit 'total_revenue' do
         date_wanted = '2012-03-25 09:54:09 UTC'
         unwanted_date = '2012-03-30 09:54:09 UTC'
         merchant_1 = create(:merchant)
@@ -188,5 +188,40 @@ RSpec.describe Merchant, type: :model do
 
 
 
+  end
+
+  describe 'Instance methods' do
+    describe 'it returns the total revenue for a merchant for successful transactions' do
+      it 'total_revenue' do
+        merchant_1 = create(:merchant)
+        merchant_2 = create(:merchant)
+        customer = create(:customer)
+        #GET /api/v1/merchants/:id/revenue
+
+        #Invoice from merchant 1
+        #Revenue is $100 from 1 successful transaction
+        invoice_1 = create(:invoice, merchant: merchant_1, customer: customer)
+        item_1 = create(:item, unit_price: 10, merchant: merchant_1)
+        invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice_1, quantity: 10)
+        transaction_1 = create(:transaction, invoice: invoice_1, result: 'success')
+
+        invoice_2 = create(:invoice, merchant: merchant_1, customer: customer)
+        invoice_item_2 = create(:invoice_item, item: item_1, invoice: invoice_2, quantity: 5)
+        transaction_2 = create(:transaction, invoice: invoice_1, result: 'failed')
+    #-------------------------------------------------------------------------------
+        #From merchant 2 revenue is $46
+        invoice_3 = create(:invoice, merchant: merchant_2, customer: customer)
+        item_2 = create(:item, unit_price: 23, merchant: merchant_2)
+        invoice_item_3 = create(:invoice_item, item: item_2, invoice: invoice_3, quantity: 2)
+        transaction_3 = create(:transaction, invoice: invoice_3, result: 'success')
+
+        invoice_4 = create(:invoice, merchant: merchant_2, customer: customer)
+        invoice_item_3 = create(:invoice_item, item: item_2, invoice: invoice_4, quantity: 1)
+        transaction_3 = create(:transaction, invoice: invoice_3, result: 'failed')
+        #------------------------------------------------
+        expect(merchant_1.revenue).to eq(100)
+        expect(merchant_2.revenue).to eq(46)
+      end
+    end
   end
 end

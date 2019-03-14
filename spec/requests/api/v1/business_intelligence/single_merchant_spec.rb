@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Single Merchant Business Intelligence' do
-  it 'returns the total revenue for that merchant across successful transactions' do
+  xit 'returns the total revenue for that merchant across successful transactions' do
     merchant_1 = create(:merchant)
     merchant_2 = create(:merchant)
     customer = create(:customer)
@@ -29,8 +29,7 @@ RSpec.describe 'Single Merchant Business Intelligence' do
     transaction_3 = create(:transaction, invoice: invoice_3, result: 'failed')
     #------------------------------------------------
     binding.pry
-    get "/api//api/v1/merchants/#{merchant_1.id}/revenue"
-    binding.pry
+    response = JSON.parse(response.body)
 
   end
 end
