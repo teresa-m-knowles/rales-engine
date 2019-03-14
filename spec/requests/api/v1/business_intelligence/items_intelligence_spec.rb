@@ -21,11 +21,11 @@ RSpec.describe 'Items business intelligence' do
 
     get '/api/v1/items/most_revenue?quantity=2'
 
-    two_items = JSON.parse(response.body)["data"]["attributes"]
-
+    two_items = JSON.parse(response.body)["data"]
     expect(response).to be_successful
 
+    expect(two_items.first["attributes"]["id"]).to eq(item_1.id)
+    expect(two_items.second["attributes"]["id"]).to eq(item_2.id)
 
   end
-  #GET /api/v1/items/most_revenue?quantity=x
 end
