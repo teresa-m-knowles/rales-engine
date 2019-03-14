@@ -223,5 +223,6 @@ RSpec.describe Merchant, type: :model do
         expect(merchant_2.revenue).to eq(46)
       end
     end
+
   end
 end
