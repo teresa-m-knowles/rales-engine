@@ -8,4 +8,13 @@ class Item < ApplicationRecord
   belongs_to :merchant
   has_many :invoice_items
   has_many :invoices, through: :invoice_items
+
+  def self.top_revenue(item_count)
+    Item.joins(invoice_items: [invoice: :transactions])
+        .merge(Transaction.unscoped.successful)
+        .select('items.*, sum(invoice_items.quantity * invoice_items.unit_price) as revenue')
+        .group(:id)
+        .order('revenue desc')
+        .limit(item_count)
+  end
 end
