@@ -166,21 +166,42 @@ describe 'All Merchants Business Intelligence' do
 
   xit 'returns the returns the total revenue for date x across all merchants' do
     #GET /api/v1/merchants/revenue?date=x
+    date_wanted = '2012-03-25 09:54:09 UTC'
+    unwanted_date = '2012-03-30 09:54:09 UTC'
     merchant_1 = create(:merchant)
     merchant_2 = create(:merchant)
 
     customer = create(:customer)
 
     #From merchant 1
+    #Revenue is 15.23
     item_1 = create(:item, merchant: merchant_1, unit_price: 15.23)
-    invoice_1 = create(:invoice, merchant: merchant_1, created_at: '2012-03-25 09:54:09 UTC' )
+    invoice_1 = create(:invoice, customer: customer, merchant: merchant_1, created_at: date_wanted)
     invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice_1, quantity: 1)
+    transaction_1 = create(:transaction, invoice: invoice_1, result: 'success')
 
+    #------------------------------------------------------
+    #From merchant 2, revenue is $10
+    item_2 = create(:item, merchant: merchant_2, unit_price: 10)
+    invoice_2 = create(:invoice, customer: customer, merchant: merchant_2, created_at: date_wanted)
+    invoice_item_2 = create(:invoice_item, item: item_2, invoice: invoice_2, quantity: 1)
+    transaction_2 = create(:transaction, invoice: invoice_2, result: 'success')
+    #Total for wanted date should be $25.23
+    #-------------------------------------------------
+    #From merchant 1, unwanted date:revenue is $20
+    invoice_3 = create(:invoice, customer: customer, merchant: merchant_1, created_at: unwanted_date)
+    invoice_item_3 = create(:invoice_item, item: item_1, invoice: invoice_3, quantity: 1)
+    transaction_3 = create(:transaction, invoice: invoice_3, result: 'success')
+
+    get "/api/v1/merchants/revenue?date=#{date_wanted}"
+    result = JSON.parse(response.body)
+
+    binding.pry
 
 
    #  merchant1 = create(:merchant)
    # item1 = create(:item, merchant_id: merchant1.id)
-   # invoice1 = create(:invoice, merchant_id: merchant1.id, created_at: "2012-03-25 09:54:09 UTC" )
+   # invoice1 = create(:invoice, customer: customer, merchant_id: merchant1.id, created_at: "2012-03-25 09:54:09 UTC" )
    # invoice_item1 = create(:invoice_item, item_id: item1.id, invoice_id: invoice1.id, quantity: 10, unit_price: 10)
    # invoice_item3 = create(:invoice_item, item_id: item1.id, invoice_id: invoice1.id, quantity: 5, unit_price: 5)
    # transaction1 = create(:transaction, invoice_id: invoice1.id)

@@ -32,6 +32,7 @@ RSpec.describe Merchant, type: :model do
         item_2 = create(:item, merchant: merchant_1, unit_price: 25)
 
         invoice_1 = create(:invoice, customer: customer, merchant: merchant_1)
+        create(:transaction, invoice: invoice_1, result: 'success')
         invoice_item_1 = create(:invoice_item, invoice: invoice_1, item: item_1, quantity: 1, unit_price: 50)
         invoice_item_2 = create(:invoice_item, invoice: invoice_1, item: item_2, quantity: 2, unit_price: 25)
     #--------------------------------------------------------------------------------------------------------
@@ -40,6 +41,7 @@ RSpec.describe Merchant, type: :model do
         #Total revenue from invoice 2 is $75
         item_3 = create(:item, merchant: merchant_2, unit_price: 25 )
         invoice_2 = create(:invoice, customer: customer, merchant: merchant_2)
+        create(:transaction, invoice: invoice_2, result: 'success')
         invoice_item_3 = create(:invoice_item, invoice: invoice_2, item: item_3, quantity: 3, unit_price: 25)
     #--------------------------------------------------------------------------------------------------------
 
@@ -48,6 +50,7 @@ RSpec.describe Merchant, type: :model do
         item_4 = create(:item, merchant: merchant_3, unit_price: 20 )
 
         invoice_3 = create(:invoice, customer: customer, merchant: merchant_3)
+        create(:transaction, invoice: invoice_3, result: 'success')
         invoice_item_4 = create(:invoice_item, invoice: invoice_3, item: item_4, quantity: 3, unit_price: 20)
 
     #--------------------------------------------------------------------------------------------------------
@@ -57,6 +60,7 @@ RSpec.describe Merchant, type: :model do
         item_6 = create(:item, merchant: merchant_4, unit_price: 5)
 
         invoice_4 = create(:invoice, customer: customer, merchant: merchant_4)
+        create(:transaction, invoice: invoice_4, result: 'success')
         invoice_item_5 = create(:invoice_item, invoice: invoice_4, item: item_5, quantity: 4, unit_price: 3.50)
         invoice_item_6 = create(:invoice_item, invoice: invoice_4, item: item_6, quantity: 5, unit_price: 5)
     #----------------------------------------------------------------------------------------------------------------
@@ -65,6 +69,7 @@ RSpec.describe Merchant, type: :model do
         item_7 = create(:item, merchant: merchant_5, unit_price: 2.77)
 
         invoice_5 = create(:invoice, customer: customer, merchant: merchant_5)
+        create(:transaction, invoice: invoice_5, result: 'success')
         invoice_item_7 = create(:invoice_item, invoice: invoice_5, item: item_7, quantity: 1, unit_price: 2.77 )
         #----------------------------------------------------------------------------------------------------------------
         expect(Merchant.most_revenue(3).first).to eq(merchant_1)
@@ -95,6 +100,7 @@ RSpec.describe Merchant, type: :model do
         item_2 = create(:item, merchant: merchant_1, unit_price: 25)
 
         invoice_1 = create(:invoice, customer: customer, merchant: merchant_1)
+        create(:transaction, invoice: invoice_1, result: 'success')
         invoice_item_1 = create(:invoice_item, invoice: invoice_1, item: item_1, quantity: 10, unit_price: 50)
         invoice_item_2 = create(:invoice_item, invoice: invoice_1, item: item_2, quantity: 10, unit_price: 25)
       #--------------------------------------------------------------------------------------------------------
@@ -104,6 +110,7 @@ RSpec.describe Merchant, type: :model do
         #Sold 15 items
         item_3 = create(:item, merchant: merchant_2, unit_price: 25 )
         invoice_2 = create(:invoice, customer: customer, merchant: merchant_2)
+        create(:transaction, invoice: invoice_2, result: 'success')
         invoice_item_3 = create(:invoice_item, invoice: invoice_2, item: item_3, quantity: 15, unit_price: 25)
       #--------------------------------------------------------------------------------------------------------
 
@@ -113,6 +120,7 @@ RSpec.describe Merchant, type: :model do
         item_4 = create(:item, merchant: merchant_3, unit_price: 20 )
 
         invoice_3 = create(:invoice, customer: customer, merchant: merchant_3)
+        create(:transaction, invoice: invoice_3, result: 'success')
         invoice_item_4 = create(:invoice_item, invoice: invoice_3, item: item_4, quantity: 13, unit_price: 20)
 
       #--------------------------------------------------------------------------------------------------------
@@ -123,6 +131,7 @@ RSpec.describe Merchant, type: :model do
         item_6 = create(:item, merchant: merchant_4, unit_price: 5)
 
         invoice_4 = create(:invoice, customer: customer, merchant: merchant_4)
+        create(:transaction, invoice: invoice_4, result: 'success')
         invoice_item_5 = create(:invoice_item, invoice: invoice_4, item: item_5, quantity: 3, unit_price: 3.50)
         invoice_item_6 = create(:invoice_item, invoice: invoice_4, item: item_6, quantity: 2, unit_price: 5)
       #----------------------------------------------------------------------------------------------------------------
@@ -132,13 +141,48 @@ RSpec.describe Merchant, type: :model do
         item_7 = create(:item, merchant: merchant_5, unit_price: 2.77)
 
         invoice_5 = create(:invoice, customer: customer, merchant: merchant_5)
+        create(:transaction, invoice: invoice_5, result: 'success')
         invoice_item_7 = create(:invoice_item, invoice: invoice_5, item: item_7, quantity: 1, unit_price: 2.77 )
         #----------------------------------------------------------------------------------------------------------------
         merchants = Merchant.most_items(3)
         expect(merchants.first).to eq(merchant_1)
         expect(merchants.second).to eq(merchant_2)
         expect(merchants.third).to eq(merchant_3)
-        
+
+      end
+    end
+
+    describe 'it returns the total revenue for a given date across all merchants' do
+      it 'total_revenue' do
+        date_wanted = '2012-03-25 09:54:09 UTC'
+        unwanted_date = '2012-03-30 09:54:09 UTC'
+        merchant_1 = create(:merchant)
+        merchant_2 = create(:merchant)
+
+        customer = create(:customer)
+
+        #From merchant 1
+        #Revenue is 15.23
+        item_1 = create(:item, merchant: merchant_1, unit_price: 15.23)
+        invoice_1 = create(:invoice, customer: customer, merchant: merchant_1, created_at: date_wanted)
+        invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice_1, quantity: 1)
+        transaction_1 = create(:transaction, invoice: invoice_1, result: 'success')
+
+        #------------------------------------------------------
+        #From merchant 2, revenue is $10
+        item_2 = create(:item, merchant: merchant_2, unit_price: 10)
+        invoice_2 = create(:invoice, customer: customer, merchant: merchant_2, created_at: date_wanted)
+        invoice_item_2 = create(:invoice_item, item: item_2, invoice: invoice_2, quantity: 1)
+        transaction_2 = create(:transaction, invoice: invoice_2, result: 'success')
+        #Total for wanted date should be $25.23
+        #-------------------------------------------------
+        #From merchant 1, unwanted date:revenue is $20
+        invoice_3 = create(:invoice, customer: customer, merchant: merchant_1, created_at: unwanted_date)
+        invoice_item_3 = create(:invoice_item, item: item_1, invoice: invoice_3, quantity: 1)
+        transaction_3 = create(:transaction, invoice: invoice_3, result: 'success')
+        #-----------------------------------------
+
+        expect(Merchant.total_revenue(date_wanted)).to eq(25.23)
       end
     end
 
