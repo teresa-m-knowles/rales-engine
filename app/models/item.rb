@@ -29,13 +29,11 @@ class Item < ApplicationRecord
   end
 
   def best_day
-    invoices.joins(:transactions, :invoice_items)
-            .merge(Transaction.unscoped.successful)
-            .select('invoices.created_at as date, count(invoices.id) * invoice_items.quantity as sales')
-            .group('invoices.created_at, invoice_items.quantity')
-            .order('sales desc, invoices.created_at asc')
+    invoices.joins(:transactions)
+            .select('invoices.created_at as date, sum(invoice_items.quantity) as sales')
+            .group('invoices.created_at')
+            .order('sales desc, invoices.created_at desc')
             .first
             .date
-
   end
 end
