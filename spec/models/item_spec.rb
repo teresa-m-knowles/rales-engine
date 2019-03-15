@@ -64,4 +64,32 @@ RSpec.describe Item, type: :model do
       end
     end
   end
+
+  describe 'instance methods' do
+    describe 'returns the date with the most sales for a given item' do
+      it 'best_day' do
+        merchant = create(:merchant)
+        customer = create(:customer)
+
+        date = '2012-03-23T10:55:29.000Z'
+
+        item = create(:item, merchant: merchant)
+
+        invoice_1 = create(:invoice, customer: customer, merchant: merchant, created_at: '2012-03-23T10:55:29.000Z')
+        invoice_item_1 = create(:invoice_item, item: item, invoice: invoice_1)
+        transaction_1 = create(:transaction, result: 'success', invoice: invoice_1)
+
+        invoice_2 = create(:invoice, customer: customer, merchant: merchant, created_at: '2012-03-23T10:55:29.000Z')
+        invoice_item_2 = create(:invoice_item, item: item, invoice: invoice_2)
+        transaction_2 = create(:transaction, result: 'success', invoice: invoice_2)
+
+        invoice_3 = create(:invoice, customer: customer, merchant: merchant, created_at: '2012-03-24T10:55:29.000Z')
+        invoice_item_3 = create(:invoice_item, item: item, invoice: invoice_3)
+        transaction_3 = create(:transaction, result: 'success', invoice: invoice_3)
+
+        expect(item.best_day).to eq('2012-03-23T10:55:29.000Z')
+        
+      end
+    end
+  end
 end

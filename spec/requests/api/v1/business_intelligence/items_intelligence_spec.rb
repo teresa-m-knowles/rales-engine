@@ -76,7 +76,7 @@ RSpec.describe 'Items business intelligence' do
     invoice_item_3 = create(:invoice_item, item: item, invoice: invoice_3)
     transaction_3 = create(:transaction, result: 'success', invoice: invoice_3)
 
-    get "/api/v1/items/:id/best_day"
+    get "/api/v1/items/#{item.id}/best_day"
 
     date = JSON.parse(response.body)["data"]["attributes"]["best_day"]
 
