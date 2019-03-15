@@ -11,7 +11,7 @@ class Api::V1::Merchants::RevenueController < ApplicationController
       revenue = merchant.revenue_by_date(params["date"])
       render json: RevenueSerializer.new(revenue)
     elsif params["date"] && !params["id"]
-      amount = Merchant.total_revenue(params["date"])
+      amount = Invoice.total_revenue(params["date"])
       render json: TotalSerializer.new(TotalRevenue.new(amount))
 
     end
