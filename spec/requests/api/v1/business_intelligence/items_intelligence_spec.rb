@@ -55,4 +55,34 @@ RSpec.describe 'Items business intelligence' do
     expect(two_items.first["attributes"]["id"]).to eq(item_1.id)
     expect(two_items.second["attributes"]["id"]).to eq(item_2.id)
   end
+
+  it ' returns the date with the most sales for the given item using the invoice date. If there are multiple days with equal number of sales, return the most recent day.' do
+    merchant = create(:merchant)
+    customer = create(:customer)
+
+    date = '2012-03-23T10:55:29.000Z'
+
+    item = create(:item, merchant: merchant)
+
+    invoice_1 = create(:invoice, customer: customer, merchant: merchant, created_at: '2012-03-23T10:55:29.000Z')
+    invoice_item_1 = create(:invoice_item, item: item, invoice: invoice_1)
+    transaction_1 = create(:transaction, result: 'success', invoice: invoice_1)
+
+    invoice_2 = create(:invoice, customer: customer, merchant: merchant, created_at: '2012-03-23T10:55:29.000Z')
+    invoice_item_2 = create(:invoice_item, item: item, invoice: invoice_2)
+    transaction_2 = create(:transaction, result: 'success', invoice: invoice_2)
+
+    invoice_3 = create(:invoice, customer: customer, merchant: merchant, created_at: '2012-03-24T10:55:29.000Z')
+    invoice_item_3 = create(:invoice_item, item: item, invoice: invoice_3)
+    transaction_3 = create(:transaction, result: 'success', invoice: invoice_3)
+
+    get "/api/v1/items/:id/best_day"
+
+    date = JSON.parse(response.body)["data"]["attributes"]["best_day"]
+
+    expect(date).to eq('2012-03-23T10:55:29.000Z')
+
+
+
+  end
 end
