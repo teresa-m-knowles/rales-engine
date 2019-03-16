@@ -50,8 +50,6 @@ RSpec.describe Customer, type: :model do
         customer = create(:customer)
         merchant_1 = create(:merchant)
         merchant_2 = create(:merchant)
-        # item_1 = create(:item, merchant: merchant_1)
-        # item_2 = create(:item, merchant: merchant_2)
 
         #Customer has 4 invoices from each merchant
         #From merchant 1, 5 transactions. 3 successful and 2 failed
