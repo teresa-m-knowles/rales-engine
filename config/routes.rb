@@ -9,10 +9,21 @@ Rails.application.routes.draw do
         get '/random', to: 'random#show'
         get '/most_revenue', to: 'most_revenue#index'
         get '/most_items', to: 'most_items#index'
-        get '/revenue', to: 'revenue_by_date#show'
+        get '/revenue', to: 'revenue#show'
         get '/:id/revenue', to: 'revenue#show'
         get '/:id/favorite_customer', to: 'favorite_customer#show'
       end
+
+      namespace :items do
+        get '/most_revenue', to: 'most_revenue#index'
+        get '/most_items', to: 'most_items#index'
+        get '/:id/best_day', to: 'best_day#show'
+      end
+
+      namespace :customers do
+        get '/:id/favorite_merchant', to: 'favorite_merchant#show'
+      end
+
       resources :merchants, only: [:index, :show] do
         resources :items, only: [:index], module: 'merchants'
         resources :invoices, only: [:index], module: 'merchants'
