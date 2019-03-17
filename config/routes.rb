@@ -18,6 +18,8 @@ Rails.application.routes.draw do
         get '/most_revenue', to: 'most_revenue#index'
         get '/most_items', to: 'most_items#index'
         get '/:id/best_day', to: 'best_day#show'
+        get '/:item_id/invoice_items', to: 'invoice_items#index'
+        get '/:item_id/merchant', to: 'merchant#show'
       end
 
       namespace :customers do
@@ -35,6 +37,10 @@ Rails.application.routes.draw do
       namespace :invoice_items do
         get '/:invoice_item_id/invoice', to: 'invoice#show'
         get '/:invoice_item_id/item', to: 'item#show'
+      end
+
+      namespace :transactions do
+        get '/:transaction_id/invoice', to: 'invoice#show'
       end
 
       resources :transactions, only: [:index, :show]
