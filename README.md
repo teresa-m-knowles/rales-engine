@@ -22,4 +22,4 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
-![alt text](http://url/to/img.png)
+![alt text](Screen Shot 2019-03-17 at 4.52.15 PM.png)
