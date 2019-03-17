@@ -31,6 +31,54 @@ RSpec.describe 'Items API' do
     expect(found_item["attributes"]["id"]).to eq(item.id)
   end
 
+  describe 'finders' do
+    it 'returns a single item based on search parameters' do
+      merchant = create(:merchant)
+      item_1 = create(:item, name: "Item 1", merchant: merchant)
+      item_2 = create(:item, name: "Item 2", merchant: merchant)
+
+      get "/api/v1/items/find?name=#{item_1.name}"
+
+      expect(response).to be_successful
+
+      item = JSON.parse(response.body)
+
+      expect(item.count).to eq(1)
+      expect(item["data"]["id"]).to eq(item_1.id.to_s)
+    end
+
+    it 'returns all items that match a search' do
+      merchant = create(:merchant)
+      item_1 = create(:item, name: "Item Name", merchant: merchant)
+      item_2 = create(:item, name: "Item", merchant: merchant)
+      item_3 = create(:item, name: "Item Name", merchant: merchant)
+
+      get "/api/v1/items/find_all?name=#{item_1.name}"
+
+      expect(response).to be_successful
+
+      items = JSON.parse(response.body)
+
+      expect(items["data"].count).to eq(2)
+      expect(items["data"][0]["id"]).to eq(item_1.id.to_s)
+      expect(items["data"][1]["id"]).to eq(item_3.id.to_s)
+    end
+  end
+
+  it 'returns a random item' do
+    merchant = create(:merchant)
+    item_1 = create(:item, name: "Item Name", merchant: merchant)
+    item_2 = create(:item, name: "Item", merchant: merchant)
+    item_3 = create(:item, name: "Item Name", merchant: merchant)
+
+    get "/api/v1/items/random"
+
+    result = JSON.parse(response.body)
+
+    expect(result.count).to eq(1)
+    expect(result["data"]["type"]).to eq("item")
+  end
+
   describe 'relationship endpoints' do
     it 'returns associated invoice_items' do
       merchant = create(:merchant)
