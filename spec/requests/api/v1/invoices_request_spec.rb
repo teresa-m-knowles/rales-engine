@@ -20,7 +20,7 @@ describe 'Invoices API' do
   it 'shows an invoices if given their id ' do
     customer = create(:customer)
     merchant = create(:merchant)
-    id = create(:invoice, customer: customer, merchant: merchant)
+    id = create(:invoice, customer: customer, merchant: merchant).id
 
     get "/api/v1/invoices/#{id}"
 
