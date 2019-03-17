@@ -22,4 +22,4 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
-![Database Visualization](/Screen Shot 2019-03-17 at 4.52.15 PM.png)
+![Database Visualization](visualization.png)
