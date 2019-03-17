@@ -87,5 +87,16 @@ RSpec.describe Customer, type: :model do
       end
     end
 
+    it 'returns all associated transactions' do
+      merchant_1 = create(:merchant)
+      customer = create(:customer)
+      invoice = create(:invoice, customer: customer, merchant: merchant_1)
+      transaction_1 = create(:transaction, invoice: invoice, result: 'success')
+      transaction_2 = create(:transaction, invoice: invoice, result: 'failed')
+
+      expect(customer.transactions.first).to eq(transaction_1)
+      expect(customer.transactions[1]).to eq(transaction_2)
+    end
+
   end
 end
