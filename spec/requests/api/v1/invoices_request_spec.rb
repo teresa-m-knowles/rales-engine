@@ -91,4 +91,29 @@ describe 'Invoices API' do
       expect(invoice["data"]["type"]).to eq("invoice")
     end
   end
+
+  describe 'relationship endpoints' do
+    it 'invoices/:id/transactions returns that invoice transactions' do
+      customer = create(:customer)
+      merchant = create(:merchant)
+      invoice = create(:invoice, customer: customer, merchant: merchant)
+      invoice_2 = create(:invoice, customer: customer, merchant: merchant)
+      transaction_1 = create(:transaction, invoice: invoice)
+      transaction_2 = create(:transaction, invoice: invoice)
+      transaction_3 = create(:transaction, invoice: invoice)
+      transaction_4 = create(:transaction, invoice: invoice_2)
+
+      get "/api/v1/invoices/#{invoice.id}/transactions"
+
+      expect(response).to be_successful
+
+      transactions = JSON.parse(response.body)
+
+      expect(transactions["data"].count).to eq(3)
+      expect(transactions["data"].first["id"]).to eq(transaction_1.id.to_s)
+      expect(transactions["data"].second["id"]).to eq(transaction_2.id.to_s)
+      expect(transactions["data"].third["id"]).to eq(transaction_3.id.to_s)
+    end
+
+  end
 end
