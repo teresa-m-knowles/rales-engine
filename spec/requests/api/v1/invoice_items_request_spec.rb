@@ -40,6 +40,66 @@ RSpec.describe 'Invoice Items Api' do
     end
   end
 
+  describe 'finders' do
+    it 'can find an invoice item by its attributes' do
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      customer = create(:customer)
+      invoice = create(:invoice, customer: customer, merchant: merchant)
+      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice, quantity: 10)
+      invoice_item_2 = create(:invoice_item, item: item_2, invoice: invoice)
+
+      get "/api/v1/invoice_items/find?quantity=10"
+      result = JSON.parse(response.body)
+
+      expect(result["data"]["id"]).to eq(invoice_item_1.id.to_s)
+    end
+
+    it 'can find all invoice items that match the search parameters' do
+      merchant = create(:merchant)
+      merchant_2 = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      customer = create(:customer)
+      invoice = create(:invoice, customer: customer, merchant: merchant)
+      invoice_2 = create(:invoice, customer: customer, merchant: merchant_2)
+      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice, quantity: 10)
+      invoice_item_2 = create(:invoice_item, item: item_2, invoice: invoice)
+      invoice_item_3 = create(:invoice_item, item: item_2, invoice: invoice_2, quantity: 10)
+
+      get "/api/v1/invoice_items/find_all?quantity=10"
+
+      result = JSON.parse(response.body)
+
+      expect(result["data"].count).to eq(2)
+      expect(result["data"][0]["id"]).to eq(invoice_item_1.id.to_s)
+      expect(result["data"][1]["id"]).to eq(invoice_item_3.id.to_s)
+      
+    end
+  end
+
+  describe 'random' do
+    it 'gets a random invoice item' do
+      merchant = create(:merchant)
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      customer = create(:customer)
+      invoice = create(:invoice, customer: customer, merchant: merchant)
+      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice)
+      invoice_item_1 = create(:invoice_item, item: item_2, invoice: invoice)
+
+      get "/api/v1/invoice_items/random"
+
+      result = JSON.parse(response.body)
+
+      expect(result.count).to eq(1)
+      expect(result["data"]["type"]).to eq("invoice_item")
+
+
+    end
+  end
+
   describe 'relationships' do
     before :each do
       @merchant = create(:merchant)
