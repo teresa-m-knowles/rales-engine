@@ -162,29 +162,23 @@ describe 'All Merchants Business Intelligence' do
 
   it 'returns the returns the total revenue for date x across all merchants' do
     #GET /api/v1/merchants/revenue?date=x
-    date_wanted = '2012-03-25 09:54:09 UTC'
-    unwanted_date = '2012-03-30 09:54:09 UTC'
+    date_wanted = '2012-03-25'
+    unwanted_date = '2012-03-30'
     merchant_1 = create(:merchant)
     merchant_2 = create(:merchant)
 
     customer = create(:customer)
 
-    #From merchant 1
-    #Revenue is 1523
     item_1 = create(:item, merchant: merchant_1, unit_price: 1523)
     invoice_1 = create(:invoice, customer: customer, merchant: merchant_1, created_at: date_wanted)
     invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice_1, quantity: 1)
     transaction_1 = create(:transaction, invoice: invoice_1, result: 'success')
 
-    #------------------------------------------------------
-    #From merchant 2, revenue is 1000
-    item_2 = create(:item, merchant: merchant_2, unit_price: 10000)
+    item_2 = create(:item, merchant: merchant_2, unit_price: 2500)
     invoice_2 = create(:invoice, customer: customer, merchant: merchant_2, created_at: date_wanted)
     invoice_item_2 = create(:invoice_item, item: item_2, invoice: invoice_2, quantity: 1)
     transaction_2 = create(:transaction, invoice: invoice_2, result: 'success')
-    #Total for wanted date should be 2523
-    #-------------------------------------------------
-    #From merchant 1, unwanted date:revenue is 1523
+
     invoice_3 = create(:invoice, customer: customer, merchant: merchant_1, created_at: unwanted_date)
     invoice_item_3 = create(:invoice_item, item: item_1, invoice: invoice_3, quantity: 1)
     transaction_3 = create(:transaction, invoice: invoice_3, result: 'success')
@@ -192,6 +186,6 @@ describe 'All Merchants Business Intelligence' do
     get "/api/v1/merchants/revenue?date=#{date_wanted}"
     result = JSON.parse(response.body)
 
-    expect(result["data"]["attributes"]["total_revenue"]).to eq("115.23")
+    expect(result["data"]["attributes"]["total_revenue"]).to eq("40.23")
   end
 end
