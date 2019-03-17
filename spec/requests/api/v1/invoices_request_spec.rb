@@ -71,4 +71,24 @@ describe 'Invoices API' do
 
     end
   end
+
+  describe 'random' do
+    it 'returns a random invoice' do
+      customer_1 = create(:customer)
+      customer_2 = create(:customer)
+      merchant = create(:merchant)
+
+      invoice_1 = create(:invoice, customer: customer_1, merchant: merchant)
+      invoice_2 = create(:invoice, customer: customer_2, merchant: merchant)
+      invoice_3 = create(:invoice, customer: customer_2, merchant: merchant)
+
+      get "/api/v1/invoices/random"
+
+      invoice = JSON.parse(response.body)
+
+      expect(response).to be_successful
+
+      expect(invoice["data"]["type"]).to eq("invoice")
+    end
+  end
 end
