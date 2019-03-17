@@ -1,30 +1,48 @@
 require 'rails_helper'
 
 RSpec.describe 'Customers API' do
-  it 'returns all customers' do
-    customers = create_list(:customer, 3)
+  describe 'record endpoints' do
+    it 'returns all customers' do
+      customers = create_list(:customer, 3)
 
-    get "/api/v1/customers"
+      get "/api/v1/customers"
 
-    expect(response).to be_successful
+      expect(response).to be_successful
 
-    result = JSON.parse(response.body)
+      result = JSON.parse(response.body)
 
-    expect(result["data"].count).to eq(3)
+      expect(result["data"].count).to eq(3)
+    end
+
+    it 'shows one customer' do
+      customer = create(:customer)
+
+      get "/api/v1/customers/#{customer.id}"
+      expect(response).to be_successful
+
+      found_customer = JSON.parse(response.body)
+
+      expect(found_customer["data"]["id"]).to eq(customer.id.to_s)
+    end
   end
 
-  it 'shows one customer' do
-    customer = create(:customer)
+  describe 'single finders' do
+    it 'can return a customer by searching by any of its parameters' do
+      customer = create(:customer, first_name: "John", last_name: "Wick", created_at: "2012-03-27T14:56:04.000Z", updated_at: "2012-03-27T14:56:04.000Z")
 
-    get "/api/v1/customers/#{customer.id}"
-    expect(response).to be_successful
+      get "/api/v1/customers/find?first_name=#{customer.first_name}"
 
-    found_customer = JSON.parse(response.body)
+      expect(response).to be_successful
 
-    expect(found_customer["data"]["id"]).to eq(customer.id.to_s)
+      wick = JSON.parse(response.body)
+
+      expect(wick["data"]["id"]).to eq(customer.id.to_s)
+    end
   end
 
-  describe 'relationships' do
+
+
+  describe 'relationship endpoints' do
     it 'returns a collection of associated invoices' do
       merchant_1 = create(:merchant)
       merchant_2 = create(:merchant)
