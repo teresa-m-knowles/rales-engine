@@ -56,11 +56,18 @@ RSpec.describe 'Invoice Items Api' do
 
       expect(response).to be_successful
 
-      expect(invoice["data"])
+      expect(invoice["data"]["id"]).to eq(@invoice.id.to_s)
 
     end
 
     it 'returns the associated item' do
+      get "/api/v1/invoice_items/#{@invoice_item.id}/item"
+
+      item = JSON.parse(response.body)
+
+      expect(response).to be_successful
+
+      expect(item["data"]["id"]).to eq(@item.id.to_s)
     end
   end
 end
