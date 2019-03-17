@@ -28,7 +28,8 @@ Rails.application.routes.draw do
         get '/find', to: 'search#show'
         get '/find_all', to: 'search#index'
         get '/random', to: 'random#show'
-
+        get '/:invoice_id/customer', to: 'customer#show'
+        get '/:invoice_id/merchant', to: 'merchant#show'
       end
 
       resources :transactions, only: [:index, :show]
@@ -37,6 +38,8 @@ Rails.application.routes.draw do
 
       resources :invoices, only: [:index, :show] do
         resources :transactions, only: [:index], module: 'invoices'
+        resources :invoice_items, only: [:index], module: 'invoices'
+        resources :items, only: [:index], module: 'invoices'
       end
 
       resources :merchants, only: [:index, :show] do
