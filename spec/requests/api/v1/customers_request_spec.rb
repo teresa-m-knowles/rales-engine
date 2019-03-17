@@ -68,8 +68,6 @@ RSpec.describe 'Customers API' do
     end
   end
 
-
-
   describe 'relationship endpoints' do
     it 'returns a collection of associated invoices' do
       merchant_1 = create(:merchant)
