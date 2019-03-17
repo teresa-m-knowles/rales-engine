@@ -39,4 +39,28 @@ RSpec.describe 'Invoice Items Api' do
       expect(in_it["data"]["id"]).to eq(invoice_item.id.to_s)
     end
   end
+
+  describe 'relationships' do
+    before :each do
+      @merchant = create(:merchant)
+      @item = create(:item, merchant: @merchant)
+      @customer = create(:customer)
+      @invoice = create(:invoice, customer: @customer, merchant: @merchant)
+
+      @invoice_item = create(:invoice_item, item: @item, invoice: @invoice)
+    end
+    it 'returns the associated invoice' do
+      get "/api/v1/invoice_items/#{@invoice_item.id}/invoice"
+
+      invoice = JSON.parse(response.body)
+
+      expect(response).to be_successful
+
+      expect(invoice["data"])
+
+    end
+
+    it 'returns the associated item' do
+    end
+  end
 end
