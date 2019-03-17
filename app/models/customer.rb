@@ -26,8 +26,8 @@ class Customer < ApplicationRecord
   end
 
   def transactions
-    invoices.joins(:transactions)
-            .merge(Transaction.unscoped)
-            .select('transactions.*')
+    Transaction.unscoped.joins(:invoice)
+                .where('invoices.customer_id = ?', self.id)
+
   end
 end
