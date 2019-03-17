@@ -15,6 +15,9 @@ Rails.application.routes.draw do
       end
 
       namespace :items do
+        get '/find', to: 'search#show'
+        get '/find_all', to: 'search#index'
+        get '/random', to: 'random#show'
         get '/most_revenue', to: 'most_revenue#index'
         get '/most_items', to: 'most_items#index'
         get '/:id/best_day', to: 'best_day#show'
