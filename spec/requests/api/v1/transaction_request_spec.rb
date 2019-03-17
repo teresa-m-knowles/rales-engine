@@ -19,6 +19,20 @@ RSpec.describe 'Transaction API' do
     expect(indexed_transactions["data"][0]["id"]).to eq(transactions[0].id.to_s)
     expect(indexed_transactions["data"][1]["id"]).to eq(transactions[1].id.to_s)
     expect(indexed_transactions["data"][2]["id"]).to eq(transactions[2].id.to_s)
+  end
+  it 'returns a transaction given its id' do
+    merchant = create(:merchant)
+    customer = create(:customer)
+    item = create(:item, merchant: merchant)
+    invoice = create(:invoice, customer: customer, merchant: merchant)
+    invoice_item = create(:invoice_item, invoice: invoice, item: item)
+    transaction= create(:transaction, invoice: invoice)
 
+    get "/api/v1/transactions/#{transaction.id}"
+    expect(response).to be_successful
+
+    result = JSON.parse(response.body)
+    
+    expect(result["data"]["id"]).to eq(transaction.id.to_s)
   end
 end
