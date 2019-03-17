@@ -24,6 +24,12 @@ Rails.application.routes.draw do
         get '/:id/favorite_merchant', to: 'favorite_merchant#show'
       end
 
+      namespace :invoices do
+        get '/find', to: 'search#show'
+        get '/find_all', to: 'search#index'
+        get '/random', to: 'random#show'
+      end
+
       resources :merchants, only: [:index, :show] do
         resources :items, only: [:index], module: 'merchants'
         resources :invoices, only: [:index], module: 'merchants'
