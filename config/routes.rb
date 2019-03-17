@@ -31,6 +31,8 @@ Rails.application.routes.draw do
 
       end
 
+      resources :transactions, only: [:index, :show]
+
       resources :invoice_items, only: [:show, :index]
 
       resources :invoices, only: [:index, :show] do
