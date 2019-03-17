@@ -26,7 +26,7 @@ RSpec.describe 'Customers API' do
     end
   end
 
-  describe 'single finders' do
+  describe 'finders' do
     it 'can return a customer by searching by any of its parameters' do
       customer = create(:customer, first_name: "John", last_name: "Wick", created_at: "2012-03-27T14:56:04.000Z", updated_at: "2012-03-27T14:56:04.000Z")
 
@@ -37,6 +37,34 @@ RSpec.describe 'Customers API' do
       wick = JSON.parse(response.body)
 
       expect(wick["data"]["id"]).to eq(customer.id.to_s)
+    end
+
+    it 'can return all customers that match the search parameter' do
+      customer_1 = create(:customer, first_name: "John", last_name: "Thompson")
+      customer_2 = create(:customer, first_name: "John", last_name: "Smith")
+      customer_3 = create(:customer, first_name: "Frank", last_name: "Smith")
+
+      get "/api/v1/customers/find_all?first_name=John"
+
+      expect(response).to be_successful
+
+      results = JSON.parse(response.body)
+
+      expect(results["data"].count).to eq(2)
+    end
+  end
+
+  describe 'returns a random customer' do
+    it 'random customer' do
+      customer_1 = create(:customer, first_name: "John", last_name: "Thompson")
+      customer_2 = create(:customer, first_name: "John", last_name: "Smith")
+      customer_3 = create(:customer, first_name: "Frank", last_name: "Smith")
+
+      get "/api/v1/customers/random"
+
+      result = JSON.parse(response.body)
+      expect(result["data"]["type"]).to eq("customer")
+      expect(result.count).to eq(1)
     end
   end
 
