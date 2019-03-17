@@ -32,7 +32,7 @@ RSpec.describe 'Transaction API' do
     expect(response).to be_successful
 
     result = JSON.parse(response.body)
-    
+
     expect(result["data"]["id"]).to eq(transaction.id.to_s)
   end
 end
