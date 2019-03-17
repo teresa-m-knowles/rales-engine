@@ -44,6 +44,19 @@ RSpec.describe 'Customers API' do
     end
 
     it 'returns a collection of associated transactions' do
+      merchant_1 = create(:merchant)
+      customer = create(:customer)
+      invoice = create(:invoice, customer: customer, merchant: merchant_1)
+      transaction_1 = create(:transaction, invoice: invoice, result: 'success')
+      transaction_2 = create(:transaction, invoice: invoice, result: 'failed')
+
+      get "/api/v1/customers/#{customer.id}/transactions"
+
+      result = JSON.parse(response.body)
+
+      expect(result["data"].count).to eq(2)
+      expect(result["data"][0]["id"]).to eq(transaction_1.id.to_s)
+      expect(result["data"][1]["id"]).to eq(transaction_2.id.to_s)
     end
   end
 end
