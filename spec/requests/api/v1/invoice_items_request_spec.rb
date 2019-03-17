@@ -64,18 +64,18 @@ RSpec.describe 'Invoice Items Api' do
       customer = create(:customer)
       invoice = create(:invoice, customer: customer, merchant: merchant)
       invoice_2 = create(:invoice, customer: customer, merchant: merchant_2)
-      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice, quantity: 10)
+      invoice_item_1 = create(:invoice_item, item: item_1, invoice: invoice, unit_price: 1099)
       invoice_item_2 = create(:invoice_item, item: item_2, invoice: invoice)
-      invoice_item_3 = create(:invoice_item, item: item_2, invoice: invoice_2, quantity: 10)
+      invoice_item_3 = create(:invoice_item, item: item_2, invoice: invoice_2, unit_price: 1099)
 
-      get "/api/v1/invoice_items/find_all?quantity=10"
+      get "/api/v1/invoice_items/find_all?unit_price=1099"
 
       result = JSON.parse(response.body)
 
       expect(result["data"].count).to eq(2)
       expect(result["data"][0]["id"]).to eq(invoice_item_1.id.to_s)
       expect(result["data"][1]["id"]).to eq(invoice_item_3.id.to_s)
-      
+
     end
   end
 

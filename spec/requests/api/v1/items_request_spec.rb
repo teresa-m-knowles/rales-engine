@@ -49,11 +49,11 @@ RSpec.describe 'Items API' do
 
     it 'returns all items that match a search' do
       merchant = create(:merchant)
-      item_1 = create(:item, name: "Item Name", merchant: merchant)
+      item_1 = create(:item, unit_price: 1099, merchant: merchant)
       item_2 = create(:item, name: "Item", merchant: merchant)
-      item_3 = create(:item, name: "Item Name", merchant: merchant)
+      item_3 = create(:item, unit_price: 1099, merchant: merchant)
 
-      get "/api/v1/items/find_all?name=#{item_1.name}"
+      get "/api/v1/items/find_all?unit_price=1099"
 
       expect(response).to be_successful
 
